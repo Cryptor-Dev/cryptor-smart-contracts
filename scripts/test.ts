@@ -4,6 +4,9 @@
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
 import { ethers } from "hardhat";
+import CryptorAbi from "../artifacts/contracts/CryptorToken/Cryptor.sol/Cryptor.json";
+// eslint-disable-next-line node/no-missing-import
+import { Cryptor } from "../typechain";
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -14,23 +17,16 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const Token = await ethers.getContractFactory("Cryptor");
-  const token = await Token.deploy("420000000000000000");
+  const Token = new ethers.Contract(
+    "0x509610939f07191ffc43e4B0335A9d73EC4955b7",
+    CryptorAbi.abi,
+    await ethers.getSigner("0xB5CAC59561581c83bf9d7a5af30ABbDBFc3B6e8A")
+  ) as Cryptor;
 
-  await token.deployed();
+  const cap = (await Token.cap()).toBigInt();
+  const totalSupply = (await Token.totalSupply()).toBigInt();
 
-  console.log("Token deployed to:", token.address);
-
-  await token.mint(
-    "0xB5CAC59561581c83bf9d7a5af30ABbDBFc3B6e8A",
-    "201600000000000000"
-  );
-
-  const balance = await token.balanceOf(
-    "0xB5CAC59561581c83bf9d7a5af30ABbDBFc3B6e8A"
-  );
-
-  console.log(balance.toNumber());
+  console.log(cap, totalSupply);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
