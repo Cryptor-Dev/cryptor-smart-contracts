@@ -1,36 +1,16 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `npx hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scope.
 import { ethers } from "hardhat";
 
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
-
-  // We get the contract to deploy
-  const Token = await ethers.getContractFactory("Cryptor");
-  const token = await Token.deploy("420000000000000000");
-
-  await token.deployed();
-
-  console.log("Token deployed to:", token.address);
-
-  await token.mint(
-    "0xB5CAC59561581c83bf9d7a5af30ABbDBFc3B6e8A",
-    "201600000000000000"
+  const cryptorFactory = await ethers.getContractFactory("Cryptor");
+  // 420,000,000 tokens will be capped
+  const cryptor = await cryptorFactory.deploy(
+    "420000000000000000",
+    "0xD377CF2BC2Feed9ab2da4D495856Fd0957FFc108"
   );
 
-  const balance = await token.balanceOf(
-    "0xB5CAC59561581c83bf9d7a5af30ABbDBFc3B6e8A"
-  );
+  await cryptor.deployed();
 
-  console.log(balance.toNumber());
+  console.log("Token deployed to:", cryptor.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

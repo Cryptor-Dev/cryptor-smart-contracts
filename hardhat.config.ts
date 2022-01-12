@@ -23,26 +23,45 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 // Go to https://hardhat.org/config/ to learn more
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.4",
+  solidity: {
+    version: "0.8.4",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+    },
+  },
   defaultNetwork: "hardhat",
   networks: {
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
+      accounts: [
+        process.env.ROPSTEN_PRIVATE_KEY_1 !== undefined
+          ? process.env.ROPSTEN_PRIVATE_KEY_1
+          : "",
+        process.env.ROPSTEN_PRIVATE_KEY_2 !== undefined
+          ? process.env.ROPSTEN_PRIVATE_KEY_2
+          : "",
+        process.env.ROPSTEN_PRIVATE_KEY_3 !== undefined
+          ? process.env.ROPSTEN_PRIVATE_KEY_3
+          : "",
+      ],
+    },
+    mainnet: {
+      url: process.env.ETHEREUM_MAINNET || "",
       accounts:
-        process.env.ROPSTEN_PRIVATE_KEY !== undefined
-          ? [process.env.ROPSTEN_PRIVATE_KEY]
+        process.env.ETHEREUM_PRIVATE_KEY_1 !== undefined
+          ? [process.env.ETHEREUM_PRIVATE_KEY_1]
           : [],
     },
-    // mainnet: {
-    //   url: process.env.ETHEREUM_MAINNET || "",
-    //   accounts:
-    //     process.env.ETHEREUM_PRIVATE_KEY !== undefined
-    //       ? [process.env.ETHEREUM_PRIVATE_KEY]
-    //       : [],
-    // },
+  },
+  mocha: {
+    timeout: 5000000000,
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
+    coinmarketcap: process.env.COINMARKETCAPAPI,
     currency: "EUR",
   },
 };

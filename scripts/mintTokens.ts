@@ -9,24 +9,16 @@ import CryptorAbi from "../artifacts/contracts/CryptorToken/Cryptor.sol/Cryptor.
 import { Cryptor } from "../typechain";
 
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
-
-  // We get the contract to deploy
-  const Token = new ethers.Contract(
-    "0x509610939f07191ffc43e4B0335A9d73EC4955b7",
+  const cryptorToken = new ethers.Contract(
+    // contract address of deployed cryptor token
+    "",
     CryptorAbi.abi,
-    await ethers.getSigner("0xB5CAC59561581c83bf9d7a5af30ABbDBFc3B6e8A")
+    // address responsible for minting
+    await ethers.provider.getSigner(0)
   ) as Cryptor;
 
-  const cap = (await Token.cap()).toBigInt();
-  const totalSupply = (await Token.totalSupply()).toBigInt();
-
-  console.log(cap, totalSupply);
+  // address towards where tokens will be minted and amount of token to be minted
+  await cryptorToken.mint("", "");
 }
 
 // We recommend this pattern to be able to use async/await everywhere
